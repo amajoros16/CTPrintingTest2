@@ -163,6 +163,7 @@ namespace CTPrintingTest
                 MessageBox.Show(msg, "GdViewer Experimental Print");
             }
             //GdViewer1.CloseDocument();
+            agent.CurrentTransaction.AddCustomAttribute("Print Status", elapsedTime);
 
         }
 
