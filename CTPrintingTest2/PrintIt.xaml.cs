@@ -32,15 +32,16 @@ namespace CTPrintingTest
 
 
                 //old set hardcoded into the services
-                String gdPictureDocumentImaging = "13294798890617477172411429960842027316";
-                String gdPicturePDFPluginLicense = "72637474592727873112111497126291724196";
-                String gdPictureXMPAnnotationsPlugin = "73476099571711969151913499944328750100";
-                String gdPictureBarcodeRecognition = "72847377395707978112112498646373012148";
+                String gdPictureDocumentImaging = "0459424151740214940601132";  //my trial key
+                //String gdPictureDocumentImaging = "13294798890617477172411429960842027316";
+                //String gdPicturePDFPluginLicense = "72637474592727873112111497126291724196";
+                //String gdPictureXMPAnnotationsPlugin = "73476099571711969151913499944328750100";
+                //String gdPictureBarcodeRecognition = "72847377395707978112112498646373012148";
 
                 licenseManager.RegisterKEY(gdPictureDocumentImaging);
-                licenseManager.RegisterKEY(gdPicturePDFPluginLicense);
-                licenseManager.RegisterKEY(gdPictureXMPAnnotationsPlugin);
-                licenseManager.RegisterKEY(gdPictureBarcodeRecognition);
+                //licenseManager.RegisterKEY(gdPicturePDFPluginLicense);
+                //licenseManager.RegisterKEY(gdPictureXMPAnnotationsPlugin);
+                //licenseManager.RegisterKEY(gdPictureBarcodeRecognition);
 
                 txtOutput.Text = txtOutput.Text + "GD Picture registered successfully." + System.Environment.NewLine;
             }

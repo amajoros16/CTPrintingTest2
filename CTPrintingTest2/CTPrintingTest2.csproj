@@ -14,6 +14,8 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,8 +37,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GdPicture.NET.14, Version=14.1.0.121, Culture=neutral, PublicKeyToken=f52a2e60ad468dbb, processorArchitecture=MSIL">
-      <HintPath>..\packages\GdPicture.NET.14.1.0.24\lib\GdPicture.NET.14.dll</HintPath>
+    <Reference Include="GdPicture.NET.14, Version=14.2.11.0, Culture=neutral, PublicKeyToken=f52a2e60ad468dbb, processorArchitecture=MSIL">
+      <HintPath>..\packages\GdPicture.14.2.11\lib\net45\GdPicture.NET.14.dll</HintPath>
+    </Reference>
+    <Reference Include="NewRelic.Api.Agent, Version=10.0.0.0, Culture=neutral, PublicKeyToken=06552fced0b33d87, processorArchitecture=MSIL">
+      <HintPath>..\packages\NewRelic.Agent.Api.10.4.0\lib\net462\NewRelic.Api.Agent.dll</HintPath>
     </Reference>
     <Reference Include="O2S.Components.PDFRender4NET.WPF, Version=5.0.1.0, Culture=neutral, PublicKeyToken=409cca6fd4e6c30b, processorArchitecture=MSIL">
       <HintPath>..\packages\O2S.Components.PDFRender4NET.WPF.5.0.1\lib\O2S.Components.PDFRender4NET.WPF.dll</HintPath>
@@ -123,11 +128,23 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="newrelic.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y "$(SolutionDir)packages\GdPicture.NET.14.1.0.24\lib\*.*" "$(TargetDir)\gdpicture"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>if not exist "$(TargetDir)\gdpicture" md  "$(TargetDir)\gdpicture"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\GdPicture.runtimes.windows.14.2.11\build\GdPicture.runtimes.windows.targets" Condition="Exists('..\packages\GdPicture.runtimes.windows.14.2.11\build\GdPicture.runtimes.windows.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\GdPicture.runtimes.windows.14.2.11\build\GdPicture.runtimes.windows.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GdPicture.runtimes.windows.14.2.11\build\GdPicture.runtimes.windows.targets'))" />
+  </Target>
 </Project>

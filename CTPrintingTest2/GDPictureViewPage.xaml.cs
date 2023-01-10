@@ -1,4 +1,5 @@
 ﻿using GdPicture14;
+using NewRelic.Api.Agent;
 using O2S.Components.PDFRender4NET.Printing;
 using O2S.Components.PDFRender4NET.WPF;
 using System;
@@ -32,12 +33,14 @@ namespace CTPrintingTest
     public partial class GDPictureViewPage : Page
     {
         private Page _previousPage = null;
-        string _dpiToUse = null;
+        private string _dpiToUse = null;
+        private string _fileSelected = null;
 
         public GDPictureViewPage(Page previousPage, string selectedDocument,string dpiToUse)
         {
             _previousPage = previousPage;
             _dpiToUse = dpiToUse;
+            _fileSelected = selectedDocument;
             InitializeComponent();
             GdViewer1.DisplayFromFile(selectedDocument);
         }
@@ -48,6 +51,12 @@ namespace CTPrintingTest
 
         private void PrintLikeCareTend_Click(object sender, RoutedEventArgs e)
         {
+            NewRelic.Api.Agent.NewRelic.SetTransactionName("CTPrintingTest2", "GDPicture CareTend Print");
+            IAgent agent = NewRelic.Api.Agent.NewRelic.GetAgent();
+            agent.CurrentTransaction.AddCustomAttribute("FileName", _fileSelected);
+            agent.CurrentTransaction.AddCustomAttribute("ProductVersion", System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetEntryAssembly().Location).ProductVersion);
+            agent.CurrentTransaction.AddCustomAttribute("DPI", _dpiToUse);
+
             PrinterSettings printerSettings = new PrinterSettings();
             //1 display the dialog
             System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
@@ -82,31 +91,41 @@ namespace CTPrintingTest
             GdViewer1.PrintSetPageSelection(""); //prints all
             GdViewer1.PrintSetCopies(1);
 
+            string msg = null;
             if (GdViewer1.Print(PrintSizeOption.PrintSizeOptionFit) == GdPictureStatus.OK)
             {
                 watch.Stop();
                 elapsedTime = watch.ElapsedMilliseconds / 1000;
                 
-                string msg = "The file has been printed successfully in  " + elapsedTime + "s.";
+                msg = "The file has been printed successfully in  " + elapsedTime + "s.";
                 MessageBox.Show(msg, "GdViewer CareTend Print");
+                agent.CurrentTransaction.AddCustomAttribute("Print Time", elapsedTime);
 
             }
 
             else
             {
-                string msg = "The file can't be printed.\nStatus: " + GdViewer1.GetStat().ToString() + System.Environment.NewLine;
+                msg = "The file can't be printed.\nStatus: " + GdViewer1.GetStat().ToString() + System.Environment.NewLine;
 
                 if (GdViewer1.PrintGetStat() == GdPictureStatus.PrintingException)
                     msg = msg + "    Error: " + GdViewer1.PrintGetLastError();
                 MessageBox.Show(msg, "GdViewer CareTend Print");
+                agent.CurrentTransaction.AddCustomAttribute("Print Time", 0);
             }
             //GdViewer1.CloseDocument();
 
+            agent.CurrentTransaction.AddCustomAttribute("Print Status", msg);
 
         }
 
         private void PrintExperimental_Click(object sender, RoutedEventArgs e)
         {
+            NewRelic.Api.Agent.NewRelic.SetTransactionName("CTPrintingTest2", "GDPicture CareTend Print Experimental");
+            IAgent agent = NewRelic.Api.Agent.NewRelic.GetAgent();
+            agent.CurrentTransaction.AddCustomAttribute("FileName", _fileSelected);
+            agent.CurrentTransaction.AddCustomAttribute("ProductVersion", System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetEntryAssembly().Location).ProductVersion);
+            agent.CurrentTransaction.AddCustomAttribute("DPI", _dpiToUse);
+
             PrinterSettings printerSettings = null;
             //1 display the dialog
             System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
@@ -144,26 +163,29 @@ namespace CTPrintingTest
             GdViewer1.PrintSetPageSelection(""); //prints all
             GdViewer1.PrintSetCopies(1);
 
+            string msg = null;
             if (GdViewer1.Print(PrintSizeOption.PrintSizeOptionFit) == GdPictureStatus.OK)
             {
                 watch.Stop();
                 elapsedTime = watch.ElapsedMilliseconds / 1000;
 
-                string msg = "The file has been printed successfully in  " + elapsedTime + "s.";
+                msg = "The file has been printed successfully in  " + elapsedTime + "s.";
                 MessageBox.Show(msg, "GdViewer Experimental Print");
+                agent.CurrentTransaction.AddCustomAttribute("Print Time", elapsedTime);
 
             }
 
             else
             {
-                string msg = "The file can't be printed.\nStatus: " + GdViewer1.GetStat().ToString() + System.Environment.NewLine;
+                msg = "The file can't be printed.\nStatus: " + GdViewer1.GetStat().ToString() + System.Environment.NewLine;
 
                 if (GdViewer1.PrintGetStat() == GdPictureStatus.PrintingException)
                     msg = msg + "    Error: " + GdViewer1.PrintGetLastError();
                 MessageBox.Show(msg, "GdViewer Experimental Print");
+                agent.CurrentTransaction.AddCustomAttribute("Print Time", 0);
             }
             //GdViewer1.CloseDocument();
-            agent.CurrentTransaction.AddCustomAttribute("Print Status", elapsedTime);
+            agent.CurrentTransaction.AddCustomAttribute("Print Status", msg);
 
         }
 
